@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 
 use App\Models\Client;
 use Illuminate\Http\Request;
+use Illuminate\Validation\Rule;
 
 class ClientController extends Controller {
     /**
@@ -21,13 +22,13 @@ class ClientController extends Controller {
      */
     public function store(Request $request) {
         $request->validate([
-            'name' => 'required|string',
+            'name' => 'required|string|min:1|max:255',
             'cpf' => 'required|cpf|formato_cpf|unique:clients',
             'birthDate' => 'required|date_format:Y-m-d|before:today|after:1900-01-01',
         ]);
 
         $client = Client::create($request->all());
-        return response()->json($client, 201);
+        return response()->json(['message' => 'Client created successfully', $client], 201);
     }
 
     /**
@@ -49,13 +50,13 @@ class ClientController extends Controller {
             return response()->json(['message' => 'Client not found'], 404);
 
         $request->validate([
-            'name' => 'required|string',
-            'cpf' => 'required|cpf|formato_cpf',
+            'name' => 'required|string|min:1|max:255',
+            'cpf' => ['required', 'cpf', 'formato_cpf', Rule::unique('clients')->ignore($client->id)],
             'birthDate' => 'required|date_format:Y-m-d|before:today|after:1900-01-01',
         ]);
 
         $client->update($request->all());
-        return response()->json($client);
+        return response()->json(['message' => 'Client updated successfully', $client]);
     }
 
     /**
@@ -65,7 +66,8 @@ class ClientController extends Controller {
         $client = Client::find($id);
         if ($client === null)
             return response()->json(['message' => 'Client not found'], 404);
+        $client->address()->delete();
         $client->delete();
-        return response()->json(['message' => 'Client deleted'], 200);
+        return response()->json(['message' => 'Client deleted successfully'], 200);
     }
 }

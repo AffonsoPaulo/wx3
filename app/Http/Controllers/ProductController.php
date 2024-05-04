@@ -14,7 +14,7 @@ class ProductController extends Controller {
     public function index() {
         $product = Product::all();
         if ($product->isEmpty())
-            return response()->json(['error' => 'Product not found'], 404);
+            return response()->json(['message' => 'Product not found'], 404);
         return response()->json($product);
     }
 
@@ -47,7 +47,7 @@ class ProductController extends Controller {
     public function show(string $id) {
         $product = Product::find($id);
         if ($product == null)
-            return response()->json(['error' => 'Product not found'], 404);
+            return response()->json(['message' => 'Product not found'], 404);
         return response()->json($product);
     }
 
@@ -57,7 +57,7 @@ class ProductController extends Controller {
     public function update(Request $request, string $id) {
         $product = Product::find($id);
         if ($product == null)
-            return response()->json(['error' => 'Product not found'], 404);
+            return response()->json(['message' => 'Product not found'], 404);
 
         $request->validate([
             'name' => 'required|string|unique:products,name',
@@ -84,7 +84,7 @@ class ProductController extends Controller {
     public function destroy(string $id) {
         $product = Product::find($id);
         if ($product == null)
-            return response()->json(['error' => 'Product not found'], 404);
+            return response()->json(['message' => 'Product not found'], 404);
         $image = explode('/', $product->image);
         Storage::disk('public')->delete($image[2] . '/' . $image[3]);
         $product->delete();

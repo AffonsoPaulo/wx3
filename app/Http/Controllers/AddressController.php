@@ -34,7 +34,7 @@ class AddressController extends Controller
         ]);
 
         $address = Address::create($request->all());
-        return response()->json($address, 201);
+        return response()->json(['message' => 'Address created successfully', $address], 201);
     }
 
     /**
@@ -68,7 +68,7 @@ class AddressController extends Controller
         ]);
 
         $address->update($request->all());
-        return response()->json($address);
+        return response()->json(['message' => 'Address updated successfully', $address]);
     }
 
     /**

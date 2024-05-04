@@ -15,8 +15,8 @@ return new class extends Migration {
             $table->decimal('shipping', 8, 2)->nullable(false);
             $table->decimal('discount', 8, 2)->nullable(false);
             $table->string('paymentMethod')->nullable(false);
-            $table->foreignId('client_id')->constrained('clients');
-            $table->foreignId('address_id')->constrained('addresses');
+            $table->foreignId('client_id')->nullable()->constrained('clients')->onDelete('set null');
+            $table->foreignId('address_id')->nullable()->constrained('addresses')->onDelete('set null');
             $table->timestamps();
         });
 
@@ -35,7 +35,7 @@ return new class extends Migration {
      * Reverse the migrations.
      */
     public function down(): void {
-        Schema::dropIfExists('sales_products');
+        Schema::dropIfExists('sale_products');
         Schema::dropIfExists('sales');
     }
 };

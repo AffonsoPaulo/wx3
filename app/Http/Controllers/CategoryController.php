@@ -14,7 +14,7 @@ class CategoryController extends Controller
     {
         $category = Category::all();
         if($category->isEmpty())
-            return response()->json(['error' => 'Category not found'], 404);
+            return response()->json(['message' => 'Category not found'], 404);
         return response()->json($category);
     }
 
@@ -30,7 +30,7 @@ class CategoryController extends Controller
 
         $category = Category::create($request->all());
 
-        return response()->json($category, 201);
+        return response()->json(['message' => 'Category created successfully', $category], 201);
     }
 
     /**
@@ -40,7 +40,7 @@ class CategoryController extends Controller
     {
         $category = Category::find($id);
         if($category == null)
-            return response()->json(['error' => 'Category not found'], 404);
+            return response()->json(['message' => 'Category not found'], 404);
         return response()->json($category);
     }
 
@@ -52,14 +52,14 @@ class CategoryController extends Controller
     {
         $category = Category::find($id);
         if($category == null)
-            return response()->json(['error' => 'Category not found'], 404);
+            return response()->json(['message' => 'Category not found'], 404);
 
         $request->validate([
             'name' => 'required|string|unique:categories',
             'description' => 'required|min:10'
         ]);
         $category->update($request->all());
-        return response()->json($category);
+        return response()->json(['message' => 'Category updated', $category]);
     }
 
     /**
@@ -69,7 +69,7 @@ class CategoryController extends Controller
     {
         $category = Category::find($id);
         if($category == null)
-            return response()->json(['error' => 'Category not found'], 404);
+            return response()->json(['message' => 'Category not found'], 404);
         $category->delete();
         return response()->json(['message' => 'Category deleted successfully']);
     }
