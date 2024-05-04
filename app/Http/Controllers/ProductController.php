@@ -6,6 +6,7 @@ use App\Models\Product;
 use http\Env\Response;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Storage;
+use Illuminate\Validation\Rule;
 
 class ProductController extends Controller {
     /**
@@ -38,7 +39,7 @@ class ProductController extends Controller {
         $imageUrl = Storage::url($image);
 
         $product = Product::create(array_merge($request->except('image'), ['image' => $imageUrl]));
-        return response()->json($product, 201);
+        return response()->json(['message' => 'Product created successfully', $product], 201);
     }
 
     /**
@@ -60,7 +61,7 @@ class ProductController extends Controller {
             return response()->json(['message' => 'Product not found'], 404);
 
         $request->validate([
-            'name' => 'required|string|unique:products,name',
+            'name' => ['required', 'string', Rule::unique('products')->ignore($product->id)],
             'color' => 'required|string',
             'image' => 'required|image|mimes:jpeg,png,jpg,svg',
             'price' => 'required|numeric|min:0',
@@ -70,12 +71,13 @@ class ProductController extends Controller {
             'category_id' => 'required|exists:categories,id',
         ]);
 
-        Storage::delete($product->image);
+        $image = explode('/', $product->image);
+        Storage::disk('public')->delete($image[2] . '/' . $image[3]);
         $image = $request->file('image')->store('images', 'public');
         $imageUrl = Storage::url($image);
 
         $product->update(array_merge($request->except('image'), ['image' => $imageUrl]));
-        return response()->json($product);
+        return response()->json(['message' => 'Product updated successfully', $product]);
     }
 
     /**
