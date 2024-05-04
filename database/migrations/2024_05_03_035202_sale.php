@@ -20,10 +20,11 @@ return new class extends Migration {
             $table->timestamps();
         });
 
-        Schema::create('sales_products', function (Blueprint $table) {
+        Schema::create('sale_products', function (Blueprint $table) {
             $table->id();
             $table->integer('quantity')->nullable(false);
             $table->decimal('price', 8, 2)->nullable(false);
+            $table->decimal('discount', 8, 2)->nullable(false);
             $table->foreignId('sale_id')->constrained('sales');
             $table->foreignId('product_id')->constrained('products');
             $table->timestamps();
