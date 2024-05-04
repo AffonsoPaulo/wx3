@@ -13,7 +13,7 @@ class CategoryController extends Controller
     public function index()
     {
         $category = Category::all();
-        if(empty($category))
+        if($category->isEmpty())
             return response()->json(['error' => 'Category not found'], 404);
         return response()->json($category);
     }

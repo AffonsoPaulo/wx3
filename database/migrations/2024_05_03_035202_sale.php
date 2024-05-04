@@ -11,23 +11,23 @@ return new class extends Migration
      */
     public function up(): void
     {
-        Schema::create('sale', function (Blueprint $table) {
+        Schema::create('sales', function (Blueprint $table) {
             $table->id();
             $table->decimal('total', 8, 2)->nullable(false);
             $table->decimal('shipping', 8, 2)->nullable(false);
             $table->decimal('discount', 8, 2)->nullable(false);
             $table->string('paymentMethod')->nullable(false);
-            $table->foreignId('client_id')->constrained('client');
-            $table->foreignId('address_id')->constrained('address');
+            $table->foreignId('client_id')->constrained('clients');
+            $table->foreignId('address_id')->constrained('addresses');
             $table->timestamps();
         });
 
-        Schema::create('sale_product', function (Blueprint $table) {
+        Schema::create('sales_products', function (Blueprint $table) {
             $table->id();
             $table->integer('quantity')->nullable(false);
             $table->decimal('price', 8, 2)->nullable(false);
-            $table->foreignId('sale_id')->constrained('sale');
-            $table->foreignId('product_id')->constrained('product');
+            $table->foreignId('sale_id')->constrained('sales');
+            $table->foreignId('product_id')->constrained('products');
             $table->timestamps();
         });
     }
@@ -37,7 +37,7 @@ return new class extends Migration
      */
     public function down(): void
     {
-        Schema::dropIfExists('sale_product');
-        Schema::dropIfExists('sale');
+        Schema::dropIfExists('sales_products');
+        Schema::dropIfExists('sales');
     }
 };

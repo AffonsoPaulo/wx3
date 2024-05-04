@@ -16,11 +16,10 @@ CREATE TABLE products
     id          INT AUTO_INCREMENT PRIMARY KEY,
     name        VARCHAR(128)  NOT NULL,
     color       VARCHAR(100)  NOT NULL,
-    imagePath   VARCHAR(256),
+    image       VARCHAR(256),
     price       DECIMAL(8, 2) NOT NULL,
     discount    DECIMAL(8, 2) NOT NULL,
     description TEXT,
-    dateAdded   TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
     weight      DECIMAL(8, 2) NOT NULL,
     category_id INT,
     FOREIGN KEY (category_id) REFERENCES category (id)

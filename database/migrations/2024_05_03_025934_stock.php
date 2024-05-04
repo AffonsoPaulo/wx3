@@ -21,21 +21,21 @@ return new class extends Migration
         Schema::create('products', function (Blueprint $table) {
             $table->id();
             $table->string('name')->unique()->nullable(false);
-            $table->string('color')->unique()->nullable(false);
-            $table->string('imagePath')->nullable();
+            $table->string('color')->nullable(false);
+            $table->string('image')->nullable();
             $table->decimal('price', 8, 2)->nullable(false);
             $table->decimal('discount', 8, 2)->nullable(false);
             $table->text('description')->nullable(false);
             $table->decimal('weight', 8, 2)->nullable(false);
-            $table->foreignId('category_id')->constrained('category');
+            $table->foreignId('category_id')->constrained('categories');
             $table->timestamps();
         });
 
         Schema::create('variations', function (Blueprint $table) {
             $table->id();
-            $table->string('size')->unique()->nullable(false);
+            $table->string('size')->nullable(false);
             $table->integer('quantity')->nullable(false);
-            $table->foreignId('product_id')->constrained('product');
+            $table->foreignId('product_id')->constrained('products');
         });
     }
 
@@ -44,8 +44,8 @@ return new class extends Migration
      */
     public function down(): void
     {
-        Schema::dropIfExists('categories');
-        Schema::dropIfExists('products');
         Schema::dropIfExists('variations');
+        Schema::dropIfExists('products');
+        Schema::dropIfExists('categories');
     }
 };

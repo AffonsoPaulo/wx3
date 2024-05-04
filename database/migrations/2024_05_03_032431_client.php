@@ -11,7 +11,7 @@ return new class extends Migration
      */
     public function up(): void
     {
-        Schema::create('client', function (Blueprint $table) {
+        Schema::create('clients', function (Blueprint $table) {
             $table->id();
             $table->string('name')->unique()->nullable(false);
             $table->string('cpf')->unique()->nullable(false);
@@ -19,7 +19,7 @@ return new class extends Migration
             $table->timestamps();
         });
 
-        Schema::create('address', function (Blueprint $table) {
+        Schema::create('addresses', function (Blueprint $table) {
             $table->id();
             $table->string('street')->nullable(false);
             $table->string('city')->nullable(false);
@@ -27,7 +27,7 @@ return new class extends Migration
             $table->string('state')->nullable(false);
             $table->integer('number')->nullable(false);
             $table->string('zipCode')->nullable(false);
-            $table->foreignId('client_id')->constrained('client');
+            $table->foreignId('client_id')->constrained('clients');
             $table->timestamps();
         });
     }
@@ -36,7 +36,7 @@ return new class extends Migration
      */
     public function down(): void
     {
-        Schema::dropIfExists('address');
-        Schema::dropIfExists('client');
+        Schema::dropIfExists('addresses');
+        Schema::dropIfExists('clients');
     }
 };
