@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 
 use App\Models\Category;
 use Illuminate\Http\Request;
+use Illuminate\Validation\Rule;
 
 class CategoryController extends Controller
 {
@@ -53,13 +54,12 @@ class CategoryController extends Controller
         $category = Category::find($id);
         if($category == null)
             return response()->json(['message' => 'Category not found'], 404);
-
         $request->validate([
-            'name' => 'required|string|unique:categories',
+            'name' => ['required', 'string', Rule::unique('categories')->ignore($category->id)],
             'description' => 'required|min:10'
         ]);
         $category->update($request->all());
-        return response()->json(['message' => 'Category updated', $category]);
+        return response()->json(['message' => 'Category updated successfully', $category]);
     }
 
     /**
