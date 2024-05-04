@@ -4,22 +4,22 @@ namespace App\Models;
 
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Database\Eloquent\Relations\BelongsTo;
 
-class Sale extends Model
-{
+class Address extends Model {
     use HasFactory;
 
     protected $fillable = [
-        'total',
-        'shipping',
-        'discount',
-        'paymentMethod',
+        'street',
+        'city',
+        'neighborhood',
+        'state',
+        'number',
+        'zipCode',
         'client_id',
-        'address_id',
     ];
 
-    public function client()
-    {
+    public function client(): BelongsTo {
         return $this->belongsTo(Client::class);
     }
 }

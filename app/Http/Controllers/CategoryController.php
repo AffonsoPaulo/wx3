@@ -53,6 +53,11 @@ class CategoryController extends Controller
         $category = Category::find($id);
         if($category == null)
             return response()->json(['error' => 'Category not found'], 404);
+
+        $request->validate([
+            'name' => 'required|string|unique:categories',
+            'description' => 'required|min:10'
+        ]);
         $category->update($request->all());
         return response()->json($category);
     }
