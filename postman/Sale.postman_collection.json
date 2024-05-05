@@ -1,0 +1,119 @@
+{
+	"info": {
+		"_postman_id": "bd344ba7-1eb2-423c-88b0-d46b1f6bde7a",
+		"name": "Sale",
+		"schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json",
+		"_exporter_id": "33151827"
+	},
+	"item": [
+		{
+			"name": "Get all sales",
+			"request": {
+				"method": "GET",
+				"header": [],
+				"url": {
+					"raw": "localhost:8000/api/sale",
+					"host": [
+						"localhost"
+					],
+					"port": "8000",
+					"path": [
+						"api",
+						"sale"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Enter a sale",
+			"request": {
+				"method": "POST",
+				"header": [
+					{
+						"key": "Accept",
+						"value": "application/json",
+						"uuid": "4ca28460-df31-43b8-9895-143e7a7f2305"
+					}
+				],
+				"body": {
+					"mode": "formdata",
+					"formdata": [
+						{
+							"key": "paymentMethod",
+							"value": "",
+							"type": "text"
+						},
+						{
+							"key": "client_id",
+							"value": "",
+							"type": "text"
+						},
+						{
+							"key": "address_id",
+							"value": "",
+							"type": "text"
+						},
+						{
+							"key": "saleProducts",
+							"value": "[{\"quantity\":0,\"product_id\":0,\"variation_id\":0}]",
+							"type": "text"
+						}
+					]
+				},
+				"url": {
+					"raw": "localhost:8000/api/sale",
+					"host": [
+						"localhost"
+					],
+					"port": "8000",
+					"path": [
+						"api",
+						"sale"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Show a sale",
+			"request": {
+				"method": "GET",
+				"header": [],
+				"url": {
+					"raw": "localhost:8000/api/sale/3",
+					"host": [
+						"localhost"
+					],
+					"port": "8000",
+					"path": [
+						"api",
+						"sale",
+						"3"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Get best sellers products",
+			"request": {
+				"method": "GET",
+				"header": [],
+				"url": {
+					"raw": "localhost:8000/api/sale/bestsellers",
+					"host": [
+						"localhost"
+					],
+					"port": "8000",
+					"path": [
+						"api",
+						"sale",
+						"bestsellers"
+					]
+				}
+			},
+			"response": []
+		}
+	]
+}
