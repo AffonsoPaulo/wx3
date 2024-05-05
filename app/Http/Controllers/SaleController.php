@@ -35,21 +35,36 @@ class SaleController extends Controller
             'saleProducts' => 'required|array|min:1',
             'saleProducts.*.quantity' => 'required|numeric|min:1',
             'saleProducts.*.product_id' => 'required|exists:products,id',
+            'saleProducts.*.variation_id' => 'required|exists:variations,id',
         ]);
 
         $request['shipping'] = 10;
         $totalDiscount = 0;
 
-        $saleProducts = array_map(function($saleProduct) use (&$totalDiscount) {
-            $product = Product::find($saleProduct['product_id']); // encontrar o produto no banco de dados
-            $saleProduct['price'] = $product->price; // pegar preço do produto
-            echo "Preço do produto " . $saleProduct['price'];
-            $saleProduct['discount'] = $saleProduct['price'] * $product->discount / 100; // encontrar valor do desconto
-            echo "Desconto do produto " . $saleProduct['discount'];
-            $totalDiscount += $saleProduct['discount'] * $saleProduct['quantity']; // somar desconto total
-            echo "Total do desconto " . $totalDiscount;
-            return new SaleProduct($saleProduct);
-        }, $request['saleProducts']);
+        foreach($request['saleProducts'] as $saleProduct) {
+            $product = Product::find($saleProduct['product_id']);
+
+            $variation = $product->variation()->where('id', $saleProduct['variation_id'])->first();
+            if(is_null($variation)) {
+                return response()->json(['message' => 'Variation not found'], 404);
+            }
+            if($variation->quantity < $saleProduct['quantity']) {
+                return response()->json(['message' => 'Product out of stock'], 400);
+            }
+        }
+
+        $saleProducts = [];
+        foreach ($request['saleProducts'] as $saleProduct) {
+            $product = Product::find($saleProduct['product_id']);
+
+            $variation = $product->variation()->where('id', $saleProduct['variation_id'])->first();
+            $variation->update(['quantity' => $variation->quantity - $saleProduct['quantity']]);
+
+            $saleProduct['price'] = $product->price;
+            $saleProduct['discount'] = $saleProduct['price'] * $product->discount / 100;
+            $totalDiscount += $saleProduct['discount'] * $saleProduct['quantity'];
+            $saleProducts[] = new SaleProduct($saleProduct);
+        }
 
         $request['discount'] = $totalDiscount;
 
@@ -63,33 +78,33 @@ class SaleController extends Controller
 
         $sale = Sale::create($request->except('saleProducts'));
 
-        $sale->save();
         $sale->saleproducts()->saveMany($saleProducts);
+        $sale->save();
 
-        return response()->json($sale, 201);
+        return response()->json(['message' => 'Sale created successfully', $sale], 201);
     }
 
     /**
      * Display the specified resource.
      */
-    public function show(Sale $sale)
+    public function show(string $id)
     {
-        //
+        $sale = Sale::with('client', 'address', 'saleproducts.product')->find($id);
+        if($sale == null)
+            return response()->json(['message' => 'No sales found'], 404);
+        return response()->json($sale);
     }
 
     /**
      * Update the specified resource in storage.
      */
-    public function update(Request $request, Sale $sale)
-    {
-        //
-    }
-
-    /**
-     * Remove the specified resource from storage.
-     */
-    public function destroy(Sale $sale)
-    {
-        //
+    public function bestSellers() {
+        $products = SaleProduct::select('product_id', SaleProduct::raw('SUM(quantity) as total'))
+            ->groupBy('product_id')
+            ->orderBy('total', 'desc')
+            ->get();
+        if($products->isEmpty())
+            return response()->json(['message' => 'No sales found'], 404);
+        return response()->json($products);
     }
 }

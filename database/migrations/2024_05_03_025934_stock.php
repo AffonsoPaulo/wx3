@@ -36,6 +36,7 @@ return new class extends Migration
             $table->string('size')->nullable(false);
             $table->integer('quantity')->nullable(false);
             $table->foreignId('product_id')->constrained('products');
+            $table->timestamps();
         });
     }
 
